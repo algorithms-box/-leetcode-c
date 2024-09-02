@@ -1,56 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct vectorToMap {
-    int val;
+struct map {
     int index;
+    int val;
 };
 
 static int compare(const void *a, const void *b) {
-    return ((struct vectorToMap *) a)->val - ((struct vectorToMap *) b)->val;
+    return ((struct map *)a)->val - ((struct map *)b)->val;
 }
 
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+int *twosum(int *nums, int numsSize, int target, int *returnSize) {
     int i, j;
-    struct vectorToMap *vm = malloc(numsSize * sizeof(*vm));
-    for(i = 0; i<numsSize; i++) {
-        vm[i].val = nums[i];
-        vm[i].index = i;
+    struct map *mp = malloc(numsSize * sizeof(*mp));
+    for (i = 0; i < numsSize; i++) {
+        mp[i].index = i;
+        mp[i].val = nums[i];
     }
-
-    qsort(vm, numsSize, sizeof(*vm), compare);
+    qsort(mp, numsSize, sizeof(*mp), compare);
 
     int *results = malloc(2 * sizeof(int));
-
     i = 0;
-    j = numsSize -1;
-    while(i<j) {
-        int sum = vm[i].val + vm[j].val;
+    j = numsSize - 1;
+    while (i < j) {
+        int sum = mp[i].val + mp[j].val;
         if (sum < target) {
             i++;
         } else if (sum > target) {
             j--;
         } else {
-            results[0] = vm[i].index;
-            results[1] = vm[j].index;
+            results[0] = mp[i].index;
+            results[1] = mp[j].index;
             *returnSize = 2;
             return results;
         }
     }
+
     return NULL;
 }
 
-
 int main(void) {
-    int nums[] = {3,2,3};
+    int nums[] = {3, 2, 3, 5, 7, 1, 2, 9};
     int size = sizeof(nums) / sizeof(*nums);
-    int target = 6;
+    int target = 9;
     int count = 0;
-    int *indexes = twoSum(nums, size, target,&count);
-    if(indexes != NULL) {
+    int *indexes = twosum(nums, size, target, &count);
+    if (indexes != NULL) {
         printf("%d %d\n", indexes[0], indexes[1]);
     } else {
         printf("Not found\n");
