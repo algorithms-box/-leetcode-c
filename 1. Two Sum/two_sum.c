@@ -10,7 +10,7 @@ static int compare(const void *a, const void *b) {
     return ((struct map *)a)->val - ((struct map *)b)->val;
 }
 
-int *twosum(int *nums, int numsSize, int target, int *returnSize) {
+int *two_sum(int *nums, int numsSize, int target, int *returnSize) {
     int i, j;
     struct map *mp = malloc(numsSize * sizeof(*mp));
     for (i = 0; i < numsSize; i++) {
@@ -44,7 +44,7 @@ int main(void) {
     int size = sizeof(nums) / sizeof(*nums);
     int target = 9;
     int count = 0;
-    int *indexes = twosum(nums, size, target, &count);
+    int *indexes = two_sum(nums, size, target, &count);
     if (indexes != NULL) {
         printf("%d %d\n", indexes[0], indexes[1]);
     } else {
