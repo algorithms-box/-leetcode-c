@@ -96,7 +96,7 @@ void performanceTest() {
     pthread_join(t2, NULL);
     clock_t end = clock();
     double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Performance Test: %.6f seconds\n", time_spent);
+    printf("\nPerformance Test: %.6f seconds\n", time_spent);
     h2oFree(obj);
 }
 
