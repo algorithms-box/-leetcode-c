@@ -1,13 +1,14 @@
-CC = gcc
-CFLAGS = -pthread -Wall -std=c11
+CC=gcc
+CFLAGS=-Wall -Wextra -pthread
+TARGET=test_traffic_light
 
-all: traffic_light
+all: $(TARGET)
 
-traffic_light: traffic_light.c
-	$(CC) $(CFLAGS) -o traffic_light traffic_light.c
+$(TARGET): test_traffic_light.c
+	$(CC) $(CFLAGS) -o $@ $<
 
-test:
-	./traffic_light test
+test: $(TARGET)
+	./$(TARGET)
 
 clean:
-	rm -f traffic_light
+	rm -f $(TARGET)

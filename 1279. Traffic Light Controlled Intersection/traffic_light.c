@@ -1,52 +1,42 @@
+#include <assert.h>
+#include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <string.h>
-#include <assert.h>
-#include <unistd.h>
+#include <time.h>
 
-#define NUM_CARS 10
+typedef struct {
+    int id;
+    pthread_mutex_t mutex;
+    int greenRoad;
+} TrafficLight;
 
-sem_t mutex;
-sem_t green[2];
-
-void* car(void* arg) {
-    int id = *(int*)arg;
-    int direction = id % 2;
-    sem_wait(&mutex);
-    printf("Car %d entering intersection in direction %d\n", id, direction);
-    sem_post(&mutex);
-
-    sem_wait(&green[direction]);
-    printf("Car %d passing through intersection in direction %d\n", id, direction);
-    sem_post(&green[1 - direction]);
-
-    return NULL;
+void turnGreen(TrafficLight *obj, int road) {
+    pthread_mutex_lock(&obj->mutex);
+    obj->greenRoad = road;
+    pthread_mutex_unlock(&obj->mutex);
 }
 
-int main(int argc, char* argv[]) {
-    pthread_t threads[NUM_CARS];
-    int ids[NUM_CARS];
-
-    // Initialize semaphores
-    sem_init(&mutex, 0, 1);
-    sem_init(&green[0], 0, 1);
-    sem_init(&green[1], 0, 0);
-
-    for (int i = 0; i < NUM_CARS; i++) {
-        ids[i] = i;
-        pthread_create(&threads[i], NULL, car, &ids[i]);
+void carArrived(TrafficLight *obj, int carId, int roadId, int direction,
+                void (*turnGreen)(int), void (*crossCar)()) {
+    pthread_mutex_lock(&obj->mutex);
+    if (obj->greenRoad != roadId) {
+        turnGreen(roadId);
+        obj->greenRoad = roadId;
     }
+    crossCar();
+    pthread_mutex_unlock(&obj->mutex);
+}
 
-    for (int i = 0; i < NUM_CARS; i++) {
-        pthread_join(threads[i], NULL);
-    }
+TrafficLight *trafficLightCreate() {
+    TrafficLight *obj = (TrafficLight *)malloc(sizeof(TrafficLight));
+    obj->id = 1;
+    pthread_mutex_init(&obj->mutex, NULL);
+    obj->greenRoad = 1;
+    return obj;
+}
 
-    // Destroy semaphores
-    sem_destroy(&mutex);
-    sem_destroy(&green[0]);
-    sem_destroy(&green[1]);
-
-    return 0;
+void trafficLightFree(TrafficLight *obj) {
+    pthread_mutex_destroy(&obj->mutex);
+    free(obj);
 }
