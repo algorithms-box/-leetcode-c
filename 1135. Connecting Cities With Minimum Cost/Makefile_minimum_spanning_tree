@@ -1,0 +1,15 @@
+CC=gcc
+CFLAGS=-Wall -std=c99
+
+test:
+	$(CC) $(CFLAGS) -o test minimum_spanning_tree.c -DMAIN_TEST
+	./test
+
+performance:
+	$(CC) $(CFLAGS) -o performance minimum_spanning_tree.c -DMAIN_PERFORMANCE
+	./performance
+
+clean:
+	rm -f test performance
+
+.PHONY: test performance clean
