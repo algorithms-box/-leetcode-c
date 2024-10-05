@@ -1,0 +1,21 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
+TARGET = longest_duplicate_substring
+
+.PHONY: all clean test performance
+
+all: $(TARGET)
+
+$(TARGET): longest_duplicate_substring.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+clean:
+	rm -f $(TARGET)
+
+test: $(TARGET)
+	@echo "Running unit tests..."
+	@./$(TARGET) | grep -q "All tests passed!" && echo "Unit tests passed!" || (echo "Unit tests failed!"; exit 1)
+
+performance: $(TARGET)
+	@echo "Running performance test..."
+	@./$(TARGET) | grep "Performance test"
