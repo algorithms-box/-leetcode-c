@@ -1,0 +1,17 @@
+CC=gcc
+CFLAGS=-pthread -Wall -std=c99
+
+all: test performance
+
+test:
+	$(CC) $(CFLAGS) -o test foo.c -DMAIN_TEST
+	./test
+
+performance:
+	$(CC) $(CFLAGS) -o performance foo.c -DMAIN_PERFORMANCE
+	./performance
+
+clean:
+	rm -f test performance
+
+.PHONY: all test performance clean

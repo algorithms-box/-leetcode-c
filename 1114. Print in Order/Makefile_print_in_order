@@ -1,0 +1,21 @@
+CC := gcc
+CFLAGS := -Wall -Wextra -pthread -O2
+TARGET := print_in_order
+
+.PHONY: all clean test performance
+
+all: $(TARGET)
+
+$(TARGET): print_in_order.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+clean:
+	rm -f $(TARGET)
+
+test: $(TARGET)
+	@echo "Running unit test..."
+	@./$(TARGET) test | grep -q "firstsecondthird" && echo "Unit test passed!" || (echo "Unit test failed!"; exit 1)
+
+performance: $(TARGET)
+	@echo "Running performance test..."
+	@time ./$(TARGET) 10
